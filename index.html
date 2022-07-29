@@ -1,0 +1,206 @@
+<html>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style> svg circle {fill: lightblue; stroke: gray;} </style>
+<body onload='init()'>
+<svg class='chart' width='800' height='800' id = 'scatter'>
+</svg>
+
+<!-- Add buttons-->
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/overview.html';">
+    Overview
+    </button>
+
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/fuel_type_bars.html';">
+    Fuel Type
+    </button>
+	
+	
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/make_bars.html';">
+    Make
+    </button>
+	
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/engine_cylinders_bars.html';">
+    Engine Cylinders
+    </button>
+	
+<div id="scatter"></div>
+
+<script>
+async function init() {
+
+margin  = 50,
+width = 800- 2*margin,
+height = 800- 2*margin;
+
+var svg = d3.select("scatter")
+.append("svg")
+  .attr("width", width )
+  .attr("height", height )
+.append("g")
+  .attr("transform",
+        "translate(" + margin + "," + margin + ")");
+
+const data = await d3.csv('https://flunky.github.io/cars2017.csv');
+
+x = d3.scaleLog()
+.domain([10,150])
+.range([0, height-2*margin]);
+
+const color = d3.scaleOrdinal()
+    .domain(["Gasoline", "Diesel", "Electricity"])
+ .range(['#ffdd51','#10e213', "#9579d9"]);
+
+y = d3.scaleLog()
+.domain([10,150])
+.range([height - 2*margin, 0]);
+
+y_axis = d3.axisLeft(y)
+.tickValues([10,20,50,100])
+.tickFormat(d3.format('~s'));
+
+x_axis = d3.axisBottom(x)
+.tickValues([10,20,50,100])
+.tickFormat(d3.format('~s'));
+
+annotations = [
+{
+ note: {
+        label: "Annotation",
+        title: " first annotation",
+align: "right",
+        wrap: 30,
+padding: 0},
+color: ["#69b3a2"],
+          x: x(30),
+          y: y(100),
+          dy: 100,
+          dx: 100
+        }]
+
+  
+
+// Tooltip code adapted from https://d3-graph-gallery.com/graph/interactivity_tooltip.html#template
+var Tooltip = d3.select("scatter")
+  .append("div")
+  .style("opacity", 1)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px")
+ 
+var mouseover = function(d) {
+  Tooltip
+    .style("opacity", 0)
+  d3.select(this)
+    .style("stroke", "black")
+    .style("opacity", 1)
+}
+
+var mousemove = function(d) {
+  Tooltip
+ .style("top", d3.select(this).attr("cy") + "px")
+ .style("left", d3.select(this).attr("cx") + "px")
+}
+
+var mouseleave = function(d) {
+  Tooltip
+    .style("opacity", 1)
+  d3.select(this)
+    .style("stroke", "gray")
+    .style("opacity", 1)
+}
+
+// create scatter plot 
+d3.select('svg').append('g')
+.attr('transform', 'translate(50,50)')
+.selectAll('circle')
+.data(data)
+.enter()
+.append('circle')
+.attr('cx', function(d) {return x(d.AverageCityMPG)})
+.attr('cy', function(d) {return y(d.AverageHighwayMPG)})
+.attr('r', function(d) {return 5 + parseInt(d.EngineCylinders)})
+.style('fill', function(d) { return color(d.Fuel)})
+.on("mouseover", mouseover)
+.on("mousemove", mousemove)
+.on("mouseleave", mouseleave)
+
+// generate y-axis with labels and ticks 
+d3.select('svg')
+.append('g')
+.attr('transform', 'translate('+margin+','+margin+')')
+.call(y_axis)
+.attr('font-size', 10)
+.attr('font-family', 'sans-serif')
+.attr('text-anchor', 'end');
+
+// generate x-axis with labels and ticks 
+d3.select('svg')
+.append('g')
+.attr('transform', 'translate('+margin+',650)')
+.call(x_axis)
+.attr('font-size', 10)
+.attr('font-family', 'sans-serif')
+.attr('text-anchor', 'middle')
+
+// x-axis label
+d3.select('svg')
+.append('text')
+.attr("text-anchor", "end")
+.attr("x", 400)
+.attr("y", height)
+.text("Average City MPG");
+
+// y-axis label
+d3.select('svg')
+.append('text')
+.attr("text-anchor", "end")
+.attr("transform", "rotate(-90)")
+.attr("y", 20)
+.attr("x", -250)
+.text("Average Highway MPG");
+
+// chart title 
+d3.select('svg')
+.append('text')
+.attr('text-anchor', 'end')
+.attr('y', 20)
+.attr('x', 500)
+.text("Average City MPG by Average Highway MPG Overview")
+
+// legend code adapted from https://bl.ocks.org/mbostock/3887118
+// create color legend 
+legend = d3.select('svg')
+.selectAll(".legend")
+.data(color.domain())
+.enter().append("g")
+.attr("class", "legend")
+.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+// add legend color boxes
+legend.append("rect")
+.attr("x",  margin + 100)
+.attr("y", 100)
+.attr("width", 15)
+.attr("height", 15)
+.style("fill",color);
+
+// add legend text
+legend.append("text")
+.attr("x", margin + 90)
+.attr("y", 110)
+.style("text-anchor", "end")
+.attr('font-size', 15)
+.text(function(d) { return d; });
+
+d3.select('svg')
+.append('g')
+.call(makeAnnotations)
+
+};
+
+</script>
+</body>
+</html>
