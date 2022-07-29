@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<!-- Add buttons-->
+<button onclick="window.location.href='file:///C:/Users/18159/Desktop/overview.html';">
+    Overview
+    </button>
+
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/fuel_type_bars.html';">
+    Fuel Type
+    </button>
+	
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/make_bars.html';">
+    Make
+    </button>
+	
+ <button onclick="window.location.href='file:///C:/Users/18159/Desktop/engine_cylinders_bars.html';">
+    Engine Cylinders
+    </button>
+
+<script>
+
+// portions of plot code adapted from https://d3-graph-gallery.com/graph/barplot_grouped_basicWide.html
+
+// set the dimensions and margins of the graph
+var margin = {top: 50, right: 30, bottom: 20, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom+100)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+		  
+// chart title 
+d3.select('svg')
+.append('text')
+.attr('text-anchor', 'end')
+.attr('y', 20)
+.attr('x', 400)
+.text("Average MPG by Fuel Type")
+
+// Parse the Data
+d3.csv("https://flunky.github.io/cars2017.csv", function(data) {
+
+  // List of subgroups = header of the csv files = soil condition here
+  var subgroups = data.columns.slice(3)
+
+  // List of groups = species here = value of the first column called group -> I show them on the X axis
+  var groups = d3.map(data, function(d){return(d.Fuel)}).keys()
+
+  // Add X axis
+  var x = d3.scaleBand()
+      .domain(groups)
+      .range([0, width])
+      .padding([0.2])
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickSize(0));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 160])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // Another scale for subgroup position?
+  var xSubgroup = d3.scaleBand()
+    .domain(subgroups)
+    .range([0, x.bandwidth()])
+    .padding([0.05])
+
+  // color palette = one color per subgroup
+  var color = d3.scaleOrdinal()
+    .domain(subgroups)
+    .range(['#e41a1c','#377eb8'])
+
+ // Show the bars
+  svg.append("g")
+    .selectAll("g")
+    // Enter in data = loop group per group
+    .data(data)
+    .enter()
+    .append("g")
+      .attr("transform", function(d) { return "translate(" + x(d.Fuel) + ",0)"; })
+.selectAll("rect")
+    .data(function(d) { return subgroups.map(function(key) { return {key: key, value: (d[key])}; }); })
+    .enter().append("rect")
+      .attr("x", function(d) { return xSubgroup(d.key); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("width", xSubgroup.bandwidth())
+      .attr("height", function(d) { return height - y(d.value); })
+      .attr("fill", function(d) { return color(d.key); });
+    
+
+// legend code adapted from https://bl.ocks.org/mbostock/3887118
+// create color legend 
+legend = d3.select('svg')
+.selectAll(".legend")
+.data(color.domain())
+.enter().append("g")
+.attr("class", "legend")
+.attr("transform", function(d, i) { return "translate(100," + i * 20 + ")"; });
+
+// add legend color boxes
+legend.append("rect")
+.attr("x",  margin + 300)
+.attr("y", 50)
+.attr("width", 15)
+.attr("height", 15)
+.style("fill",color);
+
+// add legend text
+legend.append("text")
+.attr("x", 0)
+.attr("y", 60)
+.style("text-anchor", "end")
+.attr('font-size', 12)
+.text("");
+
+})
+
+</script>
