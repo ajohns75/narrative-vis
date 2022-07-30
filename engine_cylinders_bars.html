@@ -7,21 +7,40 @@
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
+<head>
+<style>
+.button {
+  border: black;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.button1 {background-color: #999997; color: white;} /* Dark Gray */
+.button2 {background-color: #D9D9D6; color: black;} /* Gray */
+</style>
+</head>
+
 <!-- Add buttons-->
-<button onclick="window.location.href='index.html';">
+<button class= "button button2" onclick="window.location.href='index.html';">
     Overview
     </button>
 
- <button onclick="window.location.href='fuel_type_bars.html';">
+ <button class= "button button2" onclick="window.location.href='fuel_type_bars.html';">
     Fuel Type
     </button>
 	
 	
- <button onclick="window.location.href='make_bars.html';">
+ <button class= "button button2" onclick="window.location.href='make_bars.html';">
     Make
     </button>
 	
- <button onclick="window.location.href='engine_cylinders_bars.html';">
+ <button class= "button button1" onclick="window.location.href='engine_cylinders_bars.html';">
     Engine Cylinders
     </button>
 
@@ -96,10 +115,10 @@ d3.csv("https://flunky.github.io/cars2017.csv", function(data) {
     .data(data)
     .enter()
     .append("g")
-      .attr("transform", function(d) { return "translate(" + x(d.EngineCylinders) + ",0)"; })
+      .attr("transform", function(d) { return "translate(" + x(parseInt(d.EngineCylinders)) + ",0)"; })
 .selectAll("rect")
     .data(function(d) { return subgroups.map(function(key) { return {key: key, value: (d[key])}; }); })
-    .enter().append("rect")
+	.enter().append("rect")
       .attr("x", function(d) { return xSubgroup(d.key); })
       .attr("y", function(d) { return y(d.value); })
       .attr("width", xSubgroup.bandwidth())
@@ -131,6 +150,28 @@ legend.append("text")
 .style("text-anchor", "end")
 .attr('font-size', 12)
 .text("");
+
+
+d3.select('svg')
+.append('text')
+.attr('text-anchor', 'middle')
+.attr('x', 165)
+.attr('y', 82)
+.text('Average City MPG')
+.style('font', 'sans-serif')
+.style('font-size','12');
+
+d3.select('svg')
+.append('text')
+.attr('text-anchor', 'middle')
+.attr('x', 177)
+.attr('y', 62)
+.text('Average Highway MPG')
+.style('font', 'sans-serif')
+.style('font-size','12');
+
+d3.select('svg')
+.attr('style', 'outline: thin solid black')
 
 })
 

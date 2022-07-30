@@ -1,29 +1,50 @@
-<html>
+<!DOCTYPE html>
 <script src='https://d3js.org/d3.v5.min.js'></script>
+<script src=" https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+
 <style> svg circle {fill: lightblue; stroke: gray;} </style>
-<body onload='init()'>
-<svg class='chart' width='800' height='800' id = 'scatter'>
+<body onload='init()'> 
+<svg class='chart' width='800' height='700' id = 'scatter' style='background-color:lightgray'>
 </svg>
+<div id="scatter"></div>
+
+<head>
+<style>
+.button {
+  border: black;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.button1 {background-color: #999997; color: white;} /* Dark Gray */
+.button2 {background-color: #D9D9D6; color: black;} /* Gray */
+</style>
+</head>
 
 <!-- Add buttons-->
- <button onclick="window.location.href='index.html';">
+<button class= "button button1" onclick="window.location.href='index.html';">
     Overview
     </button>
 
- <button onclick="window.location.href='fuel_type_bars.html';">
+ <button class= "button button2" onclick="window.location.href='fuel_type_bars.html';">
     Fuel Type
     </button>
 	
 	
- <button onclick="window.location.href='make_bars.html';">
+ <button class= "button button2" onclick="window.location.href='make_bars.html';">
     Make
     </button>
 	
- <button onclick="window.location.href='engine_cylinders_bars.html';">
+ <button class= "button button2" onclick="window.location.href='engine_cylinders_bars.html';">
     Engine Cylinders
     </button>
 	
-<div id="scatter"></div>
 
 <script>
 async function init() {
@@ -48,7 +69,7 @@ x = d3.scaleLog()
 
 const color = d3.scaleOrdinal()
     .domain(["Gasoline", "Diesel", "Electricity"])
- .range(['#ffdd51','#10e213', "#9579d9"]);
+ .range(['#f5a623','#10e213', "#9579d9"]);
 
 y = d3.scaleLog()
 .domain([10,150])
@@ -62,55 +83,29 @@ x_axis = d3.axisBottom(x)
 .tickValues([10,20,50,100])
 .tickFormat(d3.format('~s'));
 
-annotations = [
-{
- note: {
-        label: "Annotation",
-        title: " first annotation",
-align: "right",
-        wrap: 30,
-padding: 0},
-color: ["#69b3a2"],
-          x: x(30),
-          y: y(100),
-          dy: 100,
-          dx: 100
-        }]
+const annotations = [
+  {
+    note: {
+      label: "All electric vehicles have average MPGs that are greater than 70 for both city and highway driving.",
+      title: "Electric Vehicles"
+    },
+    type: d3.annotationCalloutCircle,
+    subject: {
+      radius: 90,         // circle radius
+      radiusPadding: 5   // white space around circle befor connector
+    },
+    color: ["#9579d9"],
+    x: 600,
+    y: 150,
+    dy: 70,
+    dx: 70
+  }
+]
 
+// Add annotation to the chart
+const makeAnnotations = d3.annotation()
+  .annotations(annotations)
   
-
-// Tooltip code adapted from https://d3-graph-gallery.com/graph/interactivity_tooltip.html#template
-var Tooltip = d3.select("scatter")
-  .append("div")
-  .style("opacity", 1)
-  .attr("class", "tooltip")
-  .style("background-color", "white")
-  .style("border", "solid")
-  .style("border-width", "2px")
-  .style("border-radius", "5px")
-  .style("padding", "5px")
- 
-var mouseover = function(d) {
-  Tooltip
-    .style("opacity", 0)
-  d3.select(this)
-    .style("stroke", "black")
-    .style("opacity", 1)
-}
-
-var mousemove = function(d) {
-  Tooltip
- .style("top", d3.select(this).attr("cy") + "px")
- .style("left", d3.select(this).attr("cx") + "px")
-}
-
-var mouseleave = function(d) {
-  Tooltip
-    .style("opacity", 1)
-  d3.select(this)
-    .style("stroke", "gray")
-    .style("opacity", 1)
-}
 
 // create scatter plot 
 d3.select('svg').append('g')
@@ -123,9 +118,7 @@ d3.select('svg').append('g')
 .attr('cy', function(d) {return y(d.AverageHighwayMPG)})
 .attr('r', function(d) {return 5 + parseInt(d.EngineCylinders)})
 .style('fill', function(d) { return color(d.Fuel)})
-.on("mouseover", mouseover)
-.on("mousemove", mousemove)
-.on("mouseleave", mouseleave)
+.style('opacity', 0.7)
 
 // generate y-axis with labels and ticks 
 d3.select('svg')
@@ -134,7 +127,8 @@ d3.select('svg')
 .call(y_axis)
 .attr('font-size', 10)
 .attr('font-family', 'sans-serif')
-.attr('text-anchor', 'end');
+.attr('text-anchor', 'end')
+.attr('font-color', 'red')
 
 // generate x-axis with labels and ticks 
 d3.select('svg')
@@ -142,7 +136,6 @@ d3.select('svg')
 .attr('transform', 'translate('+margin+',650)')
 .call(x_axis)
 .attr('font-size', 10)
-.attr('font-family', 'sans-serif')
 .attr('text-anchor', 'middle')
 
 // x-axis label
@@ -150,8 +143,10 @@ d3.select('svg')
 .append('text')
 .attr("text-anchor", "end")
 .attr("x", 400)
-.attr("y", height)
-.text("Average City MPG");
+.attr("y", height-20)
+.text("Average City MPG")
+.style('fill', '#377eb8');
+
 
 // y-axis label
 d3.select('svg')
@@ -160,15 +155,17 @@ d3.select('svg')
 .attr("transform", "rotate(-90)")
 .attr("y", 20)
 .attr("x", -250)
-.text("Average Highway MPG");
+.text("Average Highway MPG")
+.style('fill', '#e41a1c');
 
 // chart title 
 d3.select('svg')
 .append('text')
 .attr('text-anchor', 'end')
-.attr('y', 20)
+.attr('y', 40)
 .attr('x', 500)
-.text("Average City MPG by Average Highway MPG Overview")
+.style('font-size', 30)
+.text("Average MPG of Cars in 2017")
 
 // legend code adapted from https://bl.ocks.org/mbostock/3887118
 // create color legend 
@@ -198,6 +195,35 @@ legend.append("text")
 d3.select('svg')
 .append('g')
 .call(makeAnnotations)
+
+var scale_data = [0,2,3,4,6,8,10,12];
+
+// Enter code here
+d3.select('svg')
+.append('g')
+.selectAll('circle')
+.data(scale_data)
+.enter()
+.append('circle')
+.attr('stroke', 'black')
+.style('fill', 'lightgray')
+.attr('cy', 120)
+.attr('cx', function(d,i) { return 230 + i*35})
+.attr('r', function(d,i) { return 5 + d})
+
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',176).text("0")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',211).text("2")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',246).text("3")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',282).text("4")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',316).text("6")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',350).text("8")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',381).text("10")
+d3.select('svg').select('g').append('text').attr('y', 100).attr('x',418).text("12")
+
+d3.select('svg').append('text').attr('y', 100).attr('x', 300).text('Engine Cylinders')
+
+d3.select('svg')
+.attr('style', 'outline: thin solid black')
 
 };
 
