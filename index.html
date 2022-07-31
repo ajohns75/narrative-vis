@@ -86,7 +86,7 @@ x_axis = d3.axisBottom(x)
 const annotations = [
   {
     note: {
-      label: "All electric vehicles have average MPGs that are greater than 70 for both city and highway driving.",
+      label: "All electric vehicles have average MPGs that are greater than 85 for both city and highway driving.",
       title: "Electric Vehicles"
     },
     type: d3.annotationCalloutCircle,
@@ -145,7 +145,7 @@ d3.select('svg')
 .attr("x", 400)
 .attr("y", height-20)
 .text("Average City MPG")
-.style('fill', '#377eb8');
+.style('fill', '#e41a1c');
 
 
 // y-axis label
@@ -156,7 +156,7 @@ d3.select('svg')
 .attr("y", 20)
 .attr("x", -250)
 .text("Average Highway MPG")
-.style('fill', '#e41a1c');
+.style('fill', '#377eb8');
 
 // chart title 
 d3.select('svg')

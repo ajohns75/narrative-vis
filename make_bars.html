@@ -74,25 +74,53 @@ d3.select('svg')
 // Parse the Data
 d3.csv("https://ajohns75.github.io/narrative-vis/make.csv", function(data) {
 
-const annotations = [
+const annotations1 = [
 {
     note: {
-    label: "All makes with averages of over 85 miles per gallon are known to make electric vehicles.",
+    label: "Tesla does not currently manufacture any vehicles that run on diesel or gasoline fuel.",
     title: "Electric Vehicles",
     align: "right",
-    wrap: 220,
+    wrap: 150,
     padding: 3
     },
     color: ["#9579d9"],
-    x: 495,
+    x: 680,
     y: 120,
     dy: 0,
-    dx: -90
+    dx: 0
 }
 ]
 
-const makeAnnotations = d3.annotation()
-  .annotations(annotations)
+const annotations2 = [
+{
+    note: {
+    label: "All makes that have average MPGs over 40 are currently manufacture electric vehicles.",
+    title: "Electric Vehicles",
+    align: "right",
+    wrap: 150,
+    padding: 3
+    },
+    color: ["#9579d9"],
+     x: 210,
+    y: 388,
+    dy: -15,
+    dx: 0,
+}
+]
+
+const makeAnnotations1 = d3.annotation()
+  .annotations(annotations1)
+  
+d3.select('svg')
+.append('g')
+.call(makeAnnotations1)
+
+const makeAnnotations2 = d3.annotation()
+  .annotations(annotations2)
+  
+d3.select('svg')
+.append('g')
+.call(makeAnnotations2)
 
   // List of subgroups = header of the csv files = soil condition here
   var subgroups = data.columns.slice(1)
@@ -183,33 +211,33 @@ legend.append("text")
 d3.select('svg')
 .append('text')
 .attr('text-anchor', 'middle')
-.attr('x', 165)
+.attr('x', 177)
 .attr('y', 82)
-.text('Average City MPG')
+.text('Average Highway MPG')
 .style('font', 'sans-serif')
 .style('font-size','12');
 
 d3.select('svg')
 .append('text')
 .attr('text-anchor', 'middle')
-.attr('x', 177)
+.attr('x', 165)
 .attr('y', 62)
-.text('Average Highway MPG')
+.text('Average City MPG')
 .style('font', 'sans-serif')
 .style('font-size','12');
 
 d3.select('svg')
 .attr('style', 'outline: thin solid black')
 
-svg.append("path")
-    .moveTo(400,85)
-    .attr("stroke", "grey")
-    .attr("stroke-dasharray", (5,5))
-	
 d3.select('svg')
-.append('g')
-.call(makeAnnotations)
-
+.append("line")
+.style('stroke', "#9579d9")
+.style('stroke-width', 1)
+.attr('x1', 55)
+.attr('y1',387.5)
+.attr('x2', 780)
+.attr('y2', 387.5)
+	
 
 })
 

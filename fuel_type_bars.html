@@ -75,26 +75,51 @@ d3.select('svg')
 d3.csv("https://ajohns75.github.io/narrative-vis/fuel.csv", function(data) {
 console.log(data)
 
-const annotations = [
+const annotations1 = [
 {
     note: {
-    label: "Electric vehicles average 3 times as many city and highway miles per gallon as regular gasoline and diesel vehicles.",
+    label: "Electric vehicles get on average 4.8 times as many city MPG as cars using diesel fuel and 6.1 times as many city MPG as cars using gasoline.",
     title: "Electric Vehicles",
     align: "right",
-    wrap: 220,
+    wrap: 150,
     padding: 3
     },
     color: ["#9579d9"],
-    x: 495,
-    y: 120,
+    x: 210,
+    y: 100,
     dy: 0,
-    dx: -90
+    dx: 35
 }
 ]
-		
-const makeAnnotations = d3.annotation()
-  .annotations(annotations)
+
+const annotations2 = [
+{
+    note: {
+    label: "Electric vehicles get on average 3.1 times as many highway MPG as cars using diesel fuel and 3.8 times as many highway MPG than cars using gasoline.",
+    title: "Electric Vehicles",
+    align: "left",
+    wrap: 150,
+    padding: 3
+    },
+    color: ["#9579d9"],
+    x: 350,
+    y: 200,
+    dy: 0,
+    dx: 35
+}
+]
   
+ const makeAnnotations = d3.annotation()
+  .annotations(annotations1)
+d3.select('svg')
+.append('g')
+.call(makeAnnotations)
+
+const makeAnnotations2 = d3.annotation()
+  .annotations(annotations2)
+d3.select('svg')
+.append('g')
+.call(makeAnnotations2)
 
   // List of subgroups = header of the csv files = soil condition here
   var subgroups = data.columns.slice(1)
@@ -102,7 +127,6 @@ const makeAnnotations = d3.annotation()
   // List of groups = species here = value of the first column called group -> I show them on the X axis
   var groups = d3.map(data, function(d){return(d.Fuel)}).keys()
   
-  console.log(groups)
 
   // Add X axis
   var x = d3.scaleBand()
@@ -169,18 +193,18 @@ legend.append("rect")
 d3.select('svg')
 .append('text')
 .attr('text-anchor', 'middle')
-.attr('x', 165)
+.attr('x', 177)
 .attr('y', 82)
-.text('Average City MPG')
+.text('Average Highway MPG')
 .style('font', 'sans-serif')
 .style('font-size','12');
 
 d3.select('svg')
 .append('text')
 .attr('text-anchor', 'middle')
-.attr('x', 177)
+.attr('x', 165)
 .attr('y', 62)
-.text('Average Highway MPG')
+.text('Average City MPG')
 .style('font', 'sans-serif')
 .style('font-size','12');
 
@@ -190,8 +214,6 @@ d3.select('svg')
 
 d3.select('svg')
 .attr('style', 'outline: thin solid black')
-
-
 
 })
 
