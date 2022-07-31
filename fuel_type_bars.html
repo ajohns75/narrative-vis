@@ -51,7 +51,7 @@
 
 // set the dimensions and margins of the graph
 var margin = {top: 50, right: 30, bottom: 20, left: 50},
-    width = 600 - margin.left - margin.right,
+    width = 800 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
@@ -85,7 +85,7 @@ const annotations1 = [
     padding: 3
     },
     color: ["#9579d9"],
-    x: 210,
+    x: 270,
     y: 100,
     dy: 0,
     dx: 35
@@ -102,7 +102,7 @@ const annotations2 = [
     padding: 3
     },
     color: ["#9579d9"],
-    x: 350,
+    x: 500,
     y: 200,
     dy: 0,
     dx: 35
@@ -120,6 +120,8 @@ const makeAnnotations2 = d3.annotation()
 d3.select('svg')
 .append('g')
 .call(makeAnnotations2)
+
+
 
   // List of subgroups = header of the csv files = soil condition here
   var subgroups = data.columns.slice(1)
