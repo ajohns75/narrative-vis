@@ -74,20 +74,22 @@ d3.select('svg')
 // Parse the Data
 d3.csv("https://flunky.github.io/cars2017.csv", function(data) {
 
-annotations = [
+const annotations = [
 {
- note: {
-        label: "Annotation",
-        title: " first annotation",
-align: "right",
-        wrap: 30,
-padding: 0},
-color: ["#69b3a2"],
-          x: 30,
-          y: 100,
-          dy: 100,
-          dx: 100
-        }]	
+    note: {
+    label: "Electric vehicles average 3 times as many city and highway miles per gallon as regular gasoline and diesel vehicles.",
+    title: "Electric Vehicles",
+    align: "right",
+    wrap: 220,
+    padding: 3
+    },
+    color: ["#9579d9"],
+    x: 495,
+    y: 120,
+    dy: 0,
+    dx: -90
+}
+]
 		
 const makeAnnotations = d3.annotation()
   .annotations(annotations)
