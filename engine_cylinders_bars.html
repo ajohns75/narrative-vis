@@ -75,10 +75,10 @@ d3.select('svg')
 		  
 
 // Parse the Data
-d3.csv("https://flunky.github.io/cars2017.csv", function(data) {
+d3.csv("https://ajohns75.github.io/narrative-vis/engine.csv", function(data) {
 
   // List of subgroups = header of the csv files = soil condition here
-  var subgroups = data.columns.slice(3)
+  var subgroups = data.columns.slice(1)
 
   // List of groups = species here = value of the first column called group -> I show them on the X axis
   var groups = d3.map(data, function(d){return(d.EngineCylinders)}).keys()
@@ -94,7 +94,7 @@ d3.csv("https://flunky.github.io/cars2017.csv", function(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, 200])
+    .domain([0, 140])
     .range([ height, 0 ]);
   svg.append("g")
     .call(d3.axisLeft(y));
